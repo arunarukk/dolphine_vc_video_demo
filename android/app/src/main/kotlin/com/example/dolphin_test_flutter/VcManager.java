@@ -5,14 +5,16 @@ import android.content.Intent;
 
 import com.nouveaulabs.sdk.DolphinVC;
 import com.nouveaulabs.sdk.listeners.DolphinInitListener;
+import com.nouveaulabs.sdk.listeners.JoinMeetingListener;
 import com.nouveaulabs.sdk.listeners.StartMeetingListener;
+import com.nouveaulabs.sdk.models.JoinMeetingOptions;
 import com.nouveaulabs.sdk.models.StartMeetingOptions;
 import com.nouveaulabs.sdk.models.StartMeetingResponse;
 
 import io.flutter.plugin.common.MethodChannel;
 
 public class VcManager {
-    public static void initilize(Context context, String serverURL, String token, String domain, MethodChannel.Result result) {
+    public static void initialize(Context context, String serverURL, String token, String domain, MethodChannel.Result result) {
         DolphinVC.initialize(context, serverURL, token, domain, new DolphinInitListener() {
             @Override
             public void onInitFailed(String reason) {
@@ -40,7 +42,7 @@ public class VcManager {
             @Override
             public void onSuccess(StartMeetingResponse meetingDetails) {
                 navigateToMeetActivity(context,meetingDetails.meetingLink);
-                result.success("success");
+                result.success(meetingDetails.meetingId);
             }
 
             @Override
@@ -53,5 +55,22 @@ public class VcManager {
         Intent meetingIntent = new Intent(context,MeetActivity.class);
         meetingIntent.putExtra("MEETING_LINK",meetingLink);
         context.startActivity(meetingIntent);
+    }
+
+    public static void joinMeeting(Context context,MethodChannel.Result result,String meetingId){
+        JoinMeetingOptions joinOptions = new JoinMeetingOptions(meetingId,"0000" ,false, "displayName",true,true,true,false,null);
+
+        DolphinVC.joinMeeting(context, joinOptions, new JoinMeetingListener() {
+            @Override
+            public void onSuccess(String meetingLink) {
+                navigateToMeetActivity(context,meetingLink);
+                result.success("success");
+            }
+
+            @Override
+            public void onFailure(String s) {
+                result.error("error",s,null);
+            }
+        });
     }
 }

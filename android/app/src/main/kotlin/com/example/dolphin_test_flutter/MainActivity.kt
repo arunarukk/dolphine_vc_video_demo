@@ -20,11 +20,14 @@ class MainActivity: FlutterActivity() {
                         val serverURL = call.argument<String>("serverURL")
                         val token = call.argument<String>("token")
                         val  domain = call.argument<String>("domain")
-                        VcManager.initilize(this@MainActivity,serverURL,token,domain, result )
+                        VcManager.initialize(this@MainActivity,serverURL,token,domain, result )
 //                        result.success(myMessage)
                     }else if (call.method == "startMeeting"){
                         VcManager.startMeeting(this@MainActivity,result)
 
+                    }else if (call.method=="joinMeeting"){
+                        val meetingId = call.argument<String>("meetingId")
+                        VcManager.joinMeeting(this@MainActivity,result,meetingId)
                     }
                 }
     }

@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    initilize();
+    initialize();
     super.initState();
   }
 
@@ -107,18 +107,30 @@ class _MyHomePageState extends State<MyHomePage> {
               'You have pushed the button this many times:',
             ),
             Text(
-              '$_counter',
+              '$meetingID',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          startMeeting();
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              startMeeting();
+            },
+            tooltip: 'Increment',
+            child: const Icon(Icons.start),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              joinMeeting();
+            },
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          ),
+        ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
