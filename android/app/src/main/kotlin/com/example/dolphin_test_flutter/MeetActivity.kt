@@ -21,12 +21,13 @@ import com.nouveaulabs.sdk.DVCMeetConferenceOptions
 
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
 
 import com.nouveaulabs.sdk.DVCMeetActivityInterface
 import com.nouveaulabs.sdk.DVCMeetOngoingConferenceService
-import dolphinvc.ZYXBroadcastEvent
+
 
 
 class MeetActivity : AppCompatActivity(), DVCMeetActivityInterface {
@@ -37,15 +38,18 @@ class MeetActivity : AppCompatActivity(), DVCMeetActivityInterface {
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val options = DVCMeetConferenceOptions.Builder()
                 .setFeatureFlag("welcomepage.enabled", false)
                 .setFeatureFlag("server-url-change.enabled", false)
                 .setFeatureFlag("call-integration.enabled", false)
+                .setFeatureFlag("invite.enabled",false)
                 .setMeetingLink(intent.extras!!.getString("MEETING_LINK"))
                 .build()
         dvcMeetView = DVCMeetView(this)
+        dvcMeetView!!.setBackgroundColor(Color.GRAY)
         dvcMeetView!!.join(options)
         setContentView(dvcMeetView)
         registerForBroadcastMessages()
@@ -114,7 +118,7 @@ class MeetActivity : AppCompatActivity(), DVCMeetActivityInterface {
 
     private fun registerForBroadcastMessages() {
         val intentFilter = IntentFilter()
-        for (type in ZYXBroadcastEvent.Type.values()) {
+        for (type in DVCBroadcastEvent.Type.values()) {
             intentFilter.addAction(type.action)
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter)
@@ -124,9 +128,9 @@ class MeetActivity : AppCompatActivity(), DVCMeetActivityInterface {
         if (intent != null) {
             val event = DVCBroadcastEvent(intent)
             when (event.type) {
-                ZYXBroadcastEvent.Type.CONFERENCE_JOINED -> onConferenceJoined(event.data)
-                ZYXBroadcastEvent.Type.CONFERENCE_WILL_JOIN -> onConferenceWillJoin(event.data)
-                ZYXBroadcastEvent.Type.CONFERENCE_TERMINATED -> onConferenceTerminated(event.data)
+                DVCBroadcastEvent.Type.CONFERENCE_JOINED -> onConferenceJoined(event.data)
+                DVCBroadcastEvent.Type.CONFERENCE_WILL_JOIN -> onConferenceWillJoin(event.data)
+                DVCBroadcastEvent.Type.CONFERENCE_TERMINATED -> onConferenceTerminated(event.data)
             }
         }
     }

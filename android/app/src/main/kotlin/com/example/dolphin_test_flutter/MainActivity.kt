@@ -15,19 +15,23 @@ class MainActivity: FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
                 .setMethodCallHandler { call: MethodCall, result: MethodChannel.Result ->
 
-                    if (call.method == "initialize") {
-
-                        val serverURL = call.argument<String>("serverURL")
-                        val token = call.argument<String>("token")
-                        val  domain = call.argument<String>("domain")
-                        VcManager.initialize(this@MainActivity,serverURL,token,domain, result )
-//                        result.success(myMessage)
-                    }else if (call.method == "startMeeting"){
-                        VcManager.startMeeting(this@MainActivity,result)
-
-                    }else if (call.method=="joinMeeting"){
-                        val meetingId = call.argument<String>("meetingId")
-                        VcManager.joinMeeting(this@MainActivity,result,meetingId)
+                    when (call.method) {
+                        "initialize" -> {
+                            val serverURL = call.argument<String>("serverURL")
+                            val token = call.argument<String>("token")
+                            val  domain = call.argument<String>("domain")
+                            VcManager.initialize(this@MainActivity,serverURL,token,domain, result )
+            //                        result.success(myMessage)
+                        }
+                        "startMeeting" -> {
+                            VcManager.startMeeting(this@MainActivity,result)
+                        }
+                        "joinMeeting" -> {
+                            val meetingId = call.argument<String>("meetingId")
+                            val passcode = call.argument<String>("passcode")
+                            val displayName = call.argument<String>("displayName")
+                            VcManager.joinMeeting(this@MainActivity,result,meetingId,passcode,displayName)
+                        }
                     }
                 }
     }
