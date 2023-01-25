@@ -16,7 +16,7 @@ xmlns:tools="http://schemas.android.com/tools"
 
         <activity
             android:name=".MeetActivity"
-            android:theme="@style/Theme.AppCompat"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
